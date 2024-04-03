@@ -114,7 +114,6 @@ protected:
   AVFormatContext           *m_pFormatContext;
   AVIOContext               *m_ioContext;
   bool                      m_eof;
-  OMXChapter                m_chapters[MAX_OMX_CHAPTERS];
   OMXStream                 m_streams[MAX_STREAMS];
   int                       m_chapter_count;
   double                    m_iCurrentPts;
@@ -130,6 +129,7 @@ protected:
   bool                      m_seek;
 private:
 public:
+  OMXChapter                m_chapters[MAX_OMX_CHAPTERS];
   OMXReader();
   ~OMXReader();
   bool Open(std::string filename, bool dump_format, bool live = false, float timeout = 0.0f, std::string cookie = "", std::string user_agent = "", std::string lavfdopts = "", std::string avdict = "");
@@ -164,7 +164,7 @@ public:
   void UpdateCurrentPTS();
   double ConvertTimestamp(int64_t pts, int den, int num);
   int GetChapter();
-  void GetChapterName(std::string& strChapterName);
+  std::string GetChapterName();
   bool SeekChapter(int chapter, double* startpts);
   int GetAudioIndex() { return (m_audio_index >= 0) ? m_streams[m_audio_index].index : -1; };
   int GetSubtitleIndex() { return (m_subtitle_index >= 0) ? m_streams[m_subtitle_index].index : -1; };

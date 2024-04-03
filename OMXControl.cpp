@@ -1061,6 +1061,28 @@ OMXControlResult OMXControl::handle_event(DBusMessage *m)
 
     return KeyConfig::ACTION_BLANK;
   }
+  else if (dbus_message_is_method_call(m, OMXPLAYER_DBUS_INTERFACE_PLAYER, "ListChapters"))
+  {
+    int count = reader->GetChapterCount();
+    char** values = new char*[count];
+
+    for (int i=0; i < count; i++)
+    {
+       asprintf(&values[i], "%d:%s:%lld", i,
+                                              	reader->m_chapters[i].name.c_str(),
+					      	reader->m_chapters[i].seekto_ms);
+    }
+
+    dbus_respond_array(m, (const char**)values, count);
+
+    // Cleanup
+    for (int i=0; i < count; i++)
+    {
+      delete[] values[i];
+    }
+
+    return KeyConfig::ACTION_BLANK;
+  }
   else if (dbus_message_is_method_call(m, OMXPLAYER_DBUS_INTERFACE_PLAYER, "SelectSubtitle"))
   {
     DBusError error;
@@ -1300,3 +1322,4 @@ DBusHandlerResult OMXControl::dbus_respond_array(DBusMessage *m, const char *arr
 
   return DBUS_HANDLER_RESULT_HANDLED;
 }
+
