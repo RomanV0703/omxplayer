@@ -1122,13 +1122,14 @@ int OMXReader::GetChapter()
   return 0;
 }
 
-void OMXReader::GetChapterName(std::string& strChapterName)
+std::string OMXReader::GetChapterName()
 {
-  strChapterName = "";
+  std::string strChapterName = "";
+
 #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,14,0)
   int chapterIdx = GetChapter();
   if(chapterIdx <= 0)
-    return;
+    return strChapterName;
 #if LIBAVFORMAT_VERSION_INT >= AV_VERSION_INT(52,83,0)
   // API added on: 2010-10-15
   // (Note that while the function was available earlier, the generic
@@ -1142,6 +1143,7 @@ void OMXReader::GetChapterName(std::string& strChapterName)
     strChapterName = m_pFormatContext->chapters[chapterIdx-1]->title;
 #endif
 #endif
+  return strChapterName;
 }
 
 void OMXReader::UpdateCurrentPTS()
