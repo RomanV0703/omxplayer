@@ -72,6 +72,7 @@ extern "C" {
 
 #define DISPLAY_TEXT_SHORT(text) DISPLAY_TEXT(text, 1000)
 #define DISPLAY_TEXT_LONG(text) DISPLAY_TEXT(text, 2000)
+#define DISPLAY_TEXT_MAX(text) DISPLAY_TEXT(text, INT_MAX)
 
 typedef enum {CONF_FLAGS_FORMAT_NONE, CONF_FLAGS_FORMAT_SBS, CONF_FLAGS_FORMAT_TB, CONF_FLAGS_FORMAT_FP } FORMAT_3D_T;
 enum PCMChannels  *m_pChannelMap        = NULL;
@@ -1478,7 +1479,7 @@ int main(int argc, char *argv[])
 
           auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
           auto dur = m_omx_reader.GetStreamLength() / 1000;
-          DISPLAY_TEXT_LONG(strprintf("Pause\n%02d:%02d:%02d / %02d:%02d:%02d",
+          DISPLAY_TEXT_MAX(strprintf("Pause\n%02d:%02d:%02d / %02d:%02d:%02d",
             (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
         }
         else
@@ -1490,6 +1491,14 @@ int main(int argc, char *argv[])
           auto dur = m_omx_reader.GetStreamLength() / 1000;
           DISPLAY_TEXT_SHORT(strprintf("Play\n%02d:%02d:%02d / %02d:%02d:%02d",
             (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
+        }
+        break;
+      case KeyConfig::ACTION_DISPLAY_POSITION:
+        {
+                auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
+                auto dur = m_omx_reader.GetStreamLength() / 1000;
+                DISPLAY_TEXT_SHORT(strprintf("%02d:%02d:%02d / %02d:%02d:%02d",
+                    (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
         }
         break;
       case KeyConfig::ACTION_MOVE_VIDEO:
