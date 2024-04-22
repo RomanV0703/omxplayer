@@ -10,6 +10,10 @@ export DBUS_SESSION_BUS_PID=`cat $OMXPLAYER_DBUS_PID`
 [ -z "$DBUS_SESSION_BUS_ADDRESS" ] && { echo "Must have DBUS_SESSION_BUS_ADDRESS" >&2; exit 1; }
 
 case $1 in
+displayPosition)
+        dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.DisplayPosition >/dev/null
+        ;;
+
 getMetadata)
 	dbus-send --print-reply=literal --session --reply-timeout=500 --dest=org.mpris.MediaPlayer2.omxplayer /org/mpris/MediaPlayer2 org.freedesktop.DBus.Properties.Get string:"org.mpris.MediaPlayer2.Player" string:"Metadata"
 	;;
@@ -19,7 +23,7 @@ getsource)
 	[ $? -ne 0 ] && exit 1
 	echo "$source" | sed 's/^ *//'
 	;;
-	
+
 hidesubtitles)
 	dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Action int32:30 >/dev/null
 	;;
@@ -90,7 +94,6 @@ setvideopos)
 showsubtitles)
 	dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Action int32:31 >/dev/null
 	;;
-
 stop)
 	dbus-send --print-reply=literal --session --dest=org.mpris.MediaPlayer2.omxplayer /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.Action int32:15 >/dev/null
 	;;
