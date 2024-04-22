@@ -62,7 +62,8 @@ int convertStringToAction(string str_action)
         return KeyConfig::ACTION_SHOW_SUBTITLES;
     if(str_action == "HIDE_SUBTITLES")
         return KeyConfig::ACTION_HIDE_SUBTITLES;
-            
+    if(str_action == "DISPLAY_POSITION")
+        return KeyConfig::ACTION_DISPLAY_POSITION;
     return -1;
 }
 /* Grabs the substring prior to the ':', this is the Action */
@@ -85,7 +86,7 @@ string getKeyFromString(string line)
     unsigned int colonIndex = line.find(":");
     if(colonIndex == string::npos)
         return "";
-    
+
     key = line.substr(colonIndex+1);
 
     return key;
@@ -128,6 +129,7 @@ map<int, int> KeyConfig::buildDefaultKeymap()
     keymap['v'] = ACTION_STEP;
     keymap['w'] = ACTION_SHOW_SUBTITLES;
     keymap['x'] = ACTION_HIDE_SUBTITLES;
+    keymap['t'] = ACTION_DISPLAY_POSITION;
 
     return keymap;
 }

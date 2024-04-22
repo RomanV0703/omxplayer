@@ -803,6 +803,11 @@ OMXControlResult OMXControl::handle_event(DBusMessage *m)
     dbus_respond_ok(m);
     return KeyConfig::ACTION_PLAYPAUSE;
   }
+  else if (dbus_message_is_method_call(m, OMXPLAYER_DBUS_INTERFACE_PLAYER, "DisplayPosition"))
+  {
+    dbus_respond_ok(m);
+    return KeyConfig::ACTION_DISPLAY_POSITION;
+  }
   else if (dbus_message_is_method_call(m, OMXPLAYER_DBUS_INTERFACE_PLAYER, "Stop"))
   {
     dbus_respond_ok(m);
