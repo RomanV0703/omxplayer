@@ -1,5 +1,5 @@
 /*
- * 
+ *
  *      Copyright (C) 2012 Edgar Hucek
  *
  * This program is free software; you can redistribute it and/or modify
@@ -118,6 +118,26 @@ bool              m_gen_log             = false;
 bool              m_loop                = false;
 
 enum{ERROR=-1,SUCCESS,ONEBYTE};
+
+std::string create_progressbar(int t, int dur)
+{
+  auto current_percent = 100 * t / dur;
+  std::string blank = "░";
+  std::string filled = "█";
+  std::string progressbar = "";
+  for (auto n = 0; n < 20; n++)
+    {
+      if (current_percent < (n+1)*5)
+        {
+          progressbar += blank;
+        }
+        else
+        {
+	  progressbar += filled;
+	}
+    }
+  return progressbar;
+}
 
 void sig_handler(int s)
 {
@@ -1479,8 +1499,9 @@ int main(int argc, char *argv[])
 
           auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
           auto dur = m_omx_reader.GetStreamLength() / 1000;
-          DISPLAY_TEXT_MAX(strprintf("Pause\n%02d:%02d:%02d / %02d:%02d:%02d",
-            (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
+	  std::string progressbar = create_progressbar(t, dur);
+          DISPLAY_TEXT_MAX(strprintf("Pause\n%02d:%02d:%02d / %02d:%02d:%02d\n",
+            (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60) + progressbar);
         }
         else
         {
@@ -1489,16 +1510,18 @@ int main(int argc, char *argv[])
 
           auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
           auto dur = m_omx_reader.GetStreamLength() / 1000;
-          DISPLAY_TEXT_SHORT(strprintf("Play\n%02d:%02d:%02d / %02d:%02d:%02d",
-            (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
+	  std::string progressbar = create_progressbar(t, dur);
+          DISPLAY_TEXT_SHORT(strprintf("Play\n%02d:%02d:%02d / %02d:%02d:%02d\n",
+            (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60) + progressbar);
         }
         break;
       case KeyConfig::ACTION_DISPLAY_POSITION:
         {
-                auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
-                auto dur = m_omx_reader.GetStreamLength() / 1000;
-                DISPLAY_TEXT_SHORT(strprintf("%02d:%02d:%02d / %02d:%02d:%02d",
-                    (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60));
+	  auto t = (unsigned) (m_av_clock->OMXMediaTime()*1e-6);
+	  auto dur = m_omx_reader.GetStreamLength() / 1000;
+	  std::string progressbar = create_progressbar(t, dur);
+	  DISPLAY_TEXT_LONG(strprintf("%02d:%02d:%02d / %02d:%02d:%02d\n",
+            (t/3600), (t/60)%60, t%60, (dur/3600), (dur/60)%60, dur%60) + progressbar);
         }
         break;
       case KeyConfig::ACTION_MOVE_VIDEO:
